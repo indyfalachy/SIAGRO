@@ -69,17 +69,17 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             backgroundColor: Colors.red,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.ac_unit_rounded),
+            icon: Icon(Icons.hdr_auto_outlined),
             label: 'Automasi',
             backgroundColor: Colors.green,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.infinity),
+            icon: Icon(Icons.info_outline_rounded),
             label: 'Info',
             backgroundColor: Colors.purple,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.Account),
+            icon: Icon(Icons.account_circle),
             label: 'My Account',
             backgroundColor: Colors.pink,
           ),
