@@ -1,14 +1,27 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'main_menu.dart';
 
 class Register extends StatefulWidget {
-  Register({Key? key, required this.title}) : super(key: key);
-  final String title;
+  Register({Key? key}) : super(key: key);
+
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<Register> {
+  bool isLoading = false;
+  final _formKey = GlobalKey<FormState>();
+  FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  DatabaseReference dbRef =
+      FirebaseDatabase.instance.reference().child("Users");
+  TextEditingController emailController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController usernamelController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,7 +66,14 @@ class _MyHomePageState extends State<Register> {
                               textAlign: TextAlign.left,
                               style: TextStyle(color: Color(0xffffffff)),
                             ),
-                            TextField(
+                            TextFormField(
+                              controller: nameController,
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Enter User Name';
+                                }
+                                return null;
+                              },
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(8),
@@ -102,7 +122,14 @@ class _MyHomePageState extends State<Register> {
                               textAlign: TextAlign.left,
                               style: TextStyle(color: Color(0xffffffff)),
                             ),
-                            TextField(
+                            TextFormField(
+                              controller: emailController,
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Enter User Name';
+                                }
+                                return null;
+                              },
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(8),
@@ -151,7 +178,16 @@ class _MyHomePageState extends State<Register> {
                               textAlign: TextAlign.left,
                               style: TextStyle(color: Color(0xffffffff)),
                             ),
-                            TextField(
+                            TextFormField(
+                              controller: usernamelController,
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Enter an Email Address';
+                                } else if (!value.contains('@')) {
+                                  return 'Please enter a valid email address';
+                                }
+                                return null;
+                              },
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(8),
@@ -200,7 +236,16 @@ class _MyHomePageState extends State<Register> {
                               textAlign: TextAlign.left,
                               style: TextStyle(color: Color(0xffffffff)),
                             ),
-                            TextField(
+                            TextFormField(
+                              controller: passwordController,
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Enter an Email Address';
+                                } else if (!value.contains('@')) {
+                                  return 'Please enter a valid email address';
+                                }
+                                return null;
+                              },
                               obscureText: true,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
@@ -250,7 +295,7 @@ class _MyHomePageState extends State<Register> {
                               textAlign: TextAlign.left,
                               style: TextStyle(color: Color(0xffffffff)),
                             ),
-                            TextField(
+                            TextFormField(
                               obscureText: true,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
@@ -298,7 +343,14 @@ class _MyHomePageState extends State<Register> {
                             SizedBox(
                                 width: 220, //cara match parent?
                                 child: ElevatedButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    // if (_formKey.currentState!.validate()) {
+                                    //   setState(() {
+                                    //     isLoading = true;
+                                    //   });
+                                    registerToFb();
+                                    // }
+                                  },
                                   child: Text('Register'),
                                   style: ElevatedButton.styleFrom(
                                     primary: Color(0xffE8DE00),
@@ -338,5 +390,50 @@ class _MyHomePageState extends State<Register> {
         ],
       )),
     );
+  }
+
+  void registerToFb() {
+    firebaseAuth
+        .createUserWithEmailAndPassword(
+            email: emailController.text, password: passwordController.text)
+        .then((result) {
+      dbRef.child(result.user!.uid).set({
+        "email": emailController.text,
+        "username": usernamelController.text,
+        "name": nameController.text
+      }).then((res) {
+        isLoading = false;
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => MainMenu()),
+        );
+      });
+    }).catchError((err) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Error"),
+              content: Text(err.message),
+              actions: [
+                TextButton(
+                  child: Text("Ok"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            );
+          });
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    nameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    usernamelController.dispose();
   }
 }

@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "819107877746",
+    "project_id": "flutter-db50e",
+    "storage_bucket": "flutter-db50e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:819107877746:android:7c69de251e6f6f77a983eb",
+        "android_client_info": {
+          "package_name": "com.example.siagro"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "819107877746-22bso04trfoir135e6fujjbgvj3fn1pa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDy3MzRcBvlZBSVfaT4plmNIxW7SAxoUOA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "819107877746-22bso04trfoir135e6fujjbgvj3fn1pa.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:819107877746:android:88107dfd0f6e45cba983eb",
+        "android_client_info": {
+          "package_name": "indy.falacy.uas"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "819107877746-22bso04trfoir135e6fujjbgvj3fn1pa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDy3MzRcBvlZBSVfaT4plmNIxW7SAxoUOA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "819107877746-22bso04trfoir135e6fujjbgvj3fn1pa.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
