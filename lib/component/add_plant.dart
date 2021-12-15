@@ -3,20 +3,24 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'main_menu.dart';
+import 'dart:math';
 
-class Register extends StatefulWidget {
-  Register({Key? key}) : super(key: key);
+class AddPlant extends StatefulWidget {
+  AddPlant({Key? key}) : super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<Register> {
+class _MyHomePageState extends State<AddPlant> {
   bool isLoading = false;
   final _formKey = GlobalKey<FormState>();
-  FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-  DatabaseReference dbRef =
-      FirebaseDatabase.instance.reference().child("Users");
+  // FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  // DatabaseReference dbRef =
+  //     FirebaseDatabase.instance.reference().child("Users");
+
+  final databaseReference = FirebaseDatabase.instance.reference();
+
   TextEditingController emailController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController usernamelController = TextEditingController();
@@ -25,31 +29,48 @@ class _MyHomePageState extends State<Register> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Color(0xff0EBDE3),
       body: Center(
           child: Row(
         children: <Widget>[
           Expanded(
-            flex: 2, // 20%
+            flex: 1, // 20%
             child: Container(color: Color(0xff0EBDE3)),
           ),
           Expanded(
-            flex: 6, // 60%
+            flex: 8, // 60%
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
+                // RichText(
+                //   text: TextSpan(
+                //     children: [
+                //       TextSpan(
+                //         text: 'SIA',
+                //         style:
+                //             TextStyle(color: Color(0xffffffff), fontSize: 50),
+                //       ),
+                //       TextSpan(
+                //         text: 'GRO',
+                //         style:
+                //             TextStyle(color: Color(0xffE8DE00), fontSize: 50),
+                //       ),
+                //     ],
+                //   ),
+                // ),
                 RichText(
                   text: TextSpan(
                     children: [
                       TextSpan(
-                        text: 'SIA',
+                        text: 'Tambah  ',
                         style:
-                            TextStyle(color: Color(0xffffffff), fontSize: 64),
+                            TextStyle(color: Color(0xffffffff), fontSize: 30),
                       ),
                       TextSpan(
-                        text: 'GRO',
+                        text: 'Tanaman',
                         style:
-                            TextStyle(color: Color(0xffE8DE00), fontSize: 64),
+                            TextStyle(color: Color(0xffE8DE00), fontSize: 30),
                       ),
                     ],
                   ),
@@ -62,7 +83,7 @@ class _MyHomePageState extends State<Register> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              'Nama Lengkap',
+                              'Nama Tanaman',
                               textAlign: TextAlign.left,
                               style: TextStyle(color: Color(0xffffffff)),
                             ),
@@ -70,7 +91,7 @@ class _MyHomePageState extends State<Register> {
                               controller: nameController,
                               validator: (value) {
                                 if (value!.isEmpty) {
-                                  return 'Enter User Name';
+                                  return 'Masukkan nama tanaman';
                                 }
                                 return null;
                               },
@@ -118,7 +139,7 @@ class _MyHomePageState extends State<Register> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              'Email',
+                              'Sensor 1',
                               textAlign: TextAlign.left,
                               style: TextStyle(color: Color(0xffffffff)),
                             ),
@@ -174,7 +195,7 @@ class _MyHomePageState extends State<Register> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              'Username',
+                              'Sensor 2',
                               textAlign: TextAlign.left,
                               style: TextStyle(color: Color(0xffffffff)),
                             ),
@@ -232,12 +253,12 @@ class _MyHomePageState extends State<Register> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              'Password',
+                              'Sensor 3',
                               textAlign: TextAlign.left,
                               style: TextStyle(color: Color(0xffffffff)),
                             ),
                             TextFormField(
-                              controller: passwordController,
+                              controller: usernamelController,
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   return 'Enter an Email Address';
@@ -246,7 +267,6 @@ class _MyHomePageState extends State<Register> {
                                 }
                                 return null;
                               },
-                              obscureText: true,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(8),
@@ -291,12 +311,20 @@ class _MyHomePageState extends State<Register> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              'Konfirmasi Password',
+                              'Sensor 4',
                               textAlign: TextAlign.left,
                               style: TextStyle(color: Color(0xffffffff)),
                             ),
                             TextFormField(
-                              obscureText: true,
+                              controller: usernamelController,
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Enter an Email Address';
+                                } else if (!value.contains('@')) {
+                                  return 'Please enter a valid email address';
+                                }
+                                return null;
+                              },
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(8),
@@ -336,32 +364,48 @@ class _MyHomePageState extends State<Register> {
                           ])),
                   Container(
                       margin: const EdgeInsets.only(top: 10.0),
-                      alignment: Alignment.center,
+                      alignment: Alignment.centerRight,
                       child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-                            SizedBox(
-                                width: 220, //cara match parent?
+                            Container(
                                 child: ElevatedButton(
-                                  onPressed: () {
-                                    // if (_formKey.currentState!.validate()) {
-                                    //   setState(() {
-                                    //     isLoading = true;
-                                    //   });
-                                    registerToFb();
-                                    // }
-                                  },
-                                  child: Text('Register'),
-                                  style: ElevatedButton.styleFrom(
-                                    primary: Color(0xffE8DE00),
-                                    shape: new RoundedRectangleBorder(
-                                      borderRadius:
-                                          new BorderRadius.circular(10.0),
-                                    ),
-                                    padding: EdgeInsets.all(20),
-                                  ),
-                                )),
-                          ]))
+                              onPressed: () {
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => MainMenu()));
+                              },
+                              child: Text('Batal'),
+                              style: ElevatedButton.styleFrom(
+                                primary: Color(0xffE8DE00),
+                                shape: new RoundedRectangleBorder(
+                                  borderRadius: new BorderRadius.circular(10.0),
+                                ),
+                                padding: EdgeInsets.only(
+                                    left: 20, right: 20, top: 10, bottom: 10),
+                              ),
+                            )),
+                            Container(
+                                child: ElevatedButton(
+                              onPressed: () {
+                                writeData();
+                                log(1);
+                              },
+                              child: Text('Submit'),
+                              style: ElevatedButton.styleFrom(
+                                primary: Color(0xffE8DE00),
+                                shape: new RoundedRectangleBorder(
+                                  borderRadius: new BorderRadius.circular(10.0),
+                                ),
+                                padding: EdgeInsets.only(
+                                    left: 20, right: 20, top: 10, bottom: 10),
+                              ),
+                            )),
+                          ])),
+                  Padding(
+                      padding: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).viewInsets.bottom))
                   // Container(
                   //     margin: const EdgeInsets.only(top: 10.0),
                   //     alignment: Alignment.centerRight,
@@ -384,7 +428,7 @@ class _MyHomePageState extends State<Register> {
             ),
           ),
           Expanded(
-            flex: 2, // 20%
+            flex: 1, // 20%
             child: Container(color: Color(0xff0EBDE3)),
           )
         ],
@@ -392,40 +436,22 @@ class _MyHomePageState extends State<Register> {
     );
   }
 
-  void registerToFb() {
-    firebaseAuth
-        .createUserWithEmailAndPassword(
-            email: emailController.text, password: passwordController.text)
-        .then((result) {
-      dbRef.child(result.user!.uid).set({
-        "email": emailController.text,
-        "username": usernamelController.text,
-        "name": nameController.text
-      }).then((res) {
-        isLoading = false;
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => MainMenu()),
-        );
-      });
-    }).catchError((err) {
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("Error"),
-              content: Text(err.message),
-              actions: [
-                TextButton(
-                  child: Text("Ok"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                )
-              ],
-            );
-          });
+  void writeData() {
+    // log("x");
+    print("asd");
+    var random = new Random();
+    databaseReference.child(nameController.text).set({
+      "id": nameController.text,
+      "name": nameController.text,
+      "sensor1": random.nextInt(100),
+      "sensor2": random.nextInt(100),
+      "sensor3": random.nextInt(100),
+      "sensor4": random.nextInt(100),
     });
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => MainMenu()),
+    );
   }
 
   @override
