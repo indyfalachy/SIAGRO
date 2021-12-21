@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:siagro/component/login.dart';
 import 'dart:async';
 import 'register.dart';
 import 'main_menu.dart';
 import 'add_plant.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:slugify/slugify.dart';
 
 class MyAccount extends StatefulWidget {
   const MyAccount({Key? key}) : super(key: key);
@@ -14,13 +17,43 @@ class MyAccount extends StatefulWidget {
 
 class _MyAccount extends State<MyAccount> {
   List<String> List_nama = ["Tanaman A", "Tanaman B", "Tanaman C", "Tanaman D"];
+  Future<void> _signOut() async {
+    await FirebaseAuth.instance.signOut();
+  }
+
+  final databaseReference = FirebaseDatabase.instance.reference();
+
+  var users;
+  String email = "";
+  void initState() {
+    super.initState();
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user == null) {
+      } else {
+        email = user.email.toString();
+        users = databaseReference
+            .child('users')
+            .child(slugify(email))
+            .get()
+            .then((DataSnapshot dataSnapshot) {
+          users = dataSnapshot.value.values;
+          print(users);
+
+          setState(() {
+            users = dataSnapshot.value;
+          });
+        });
+        print(users);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Color(0xff0EBDE3),
         body: Row(children: [
-          Expanded(flex: 1, child: Container()),
+          if (users != null) Expanded(flex: 1, child: Container()),
           Expanded(
             flex: 8,
             child: Column(
@@ -50,136 +83,148 @@ class _MyAccount extends State<MyAccount> {
                             ),
                             // Spacer(),
                             SizedBox(width: 10),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("INDY FALACHY"),
-                                Text("085123456789"),
-                                Text("indyfalakhy@ngawur.com"),
-                              ],
-                            )
+                            if (users != null)
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(users['name']),
+                                  Text(users['username']),
+                                  Text(users['email']),
+                                ],
+                              )
                           ],
                         ),
-                        Center(
-                          child: Container(
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            padding: EdgeInsets.only(
-                                left: 20, right: 20, top: 20, bottom: 20),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Pengaturan Akun",
-                                  style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                SizedBox(height: 15),
-                                Text(
-                                  "Nama Pengguna",
-                                  style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  "Indy Falachy",
-                                  style: TextStyle(fontSize: 12),
-                                ),
-                                SizedBox(height: 15),
-                                Text(
-                                  "Alamat Surel",
-                                  style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  "indyfalakhy@ngawur.com",
-                                  style: TextStyle(fontSize: 12),
-                                ),
-                                SizedBox(height: 15),
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.help,
-                                      color: Colors.black,
-                                      size: 24.0,
-                                      semanticLabel:
-                                          'Text to announce in accessibility modes',
-                                    ),
-                                    Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "Help Center",
+                        if (users != null)
+                          Center(
+                            child: Container(
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              padding: EdgeInsets.only(
+                                  left: 20, right: 20, top: 20, bottom: 20),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Pengaturan Akun",
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  SizedBox(height: 15),
+                                  Text(
+                                    "Nama Pengguna",
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  Text(
+                                    users['name'],
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                  SizedBox(height: 15),
+                                  Text(
+                                    "Alamat Surel",
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  Text(
+                                    users['email'],
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                  SizedBox(height: 15),
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.help,
+                                        color: Colors.black,
+                                        size: 24.0,
+                                        semanticLabel:
+                                            'Text to announce in accessibility modes',
+                                      ),
+                                      Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "Help Center",
+                                            style: TextStyle(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Text(
+                                            "Tanyakan masalah yang pada aplikasi ini",
+                                            style: TextStyle(fontSize: 12),
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                  SizedBox(height: 15),
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.info,
+                                        color: Colors.black,
+                                        size: 24.0,
+                                        semanticLabel:
+                                            'Text to announce in accessibility modes',
+                                      ),
+                                      Column(
+                                        children: [
+                                          Text(
+                                            "Tentang Aplikasi",
+                                            style: TextStyle(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Text(
+                                            "Tentang aplikasi ini",
+                                            style: TextStyle(fontSize: 12),
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                  SizedBox(height: 15),
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.logout_rounded,
+                                        color: Colors.black,
+                                        size: 24.0,
+                                        semanticLabel:
+                                            'Text to announce in accessibility modes',
+                                      ),
+                                      new GestureDetector(
+                                        onTap: () {
+                                          _signOut();
+                                          Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => Login()),
+                                          );
+                                        },
+                                        child: new Text(
+                                          "Log Out",
                                           style: TextStyle(
                                               fontSize: 15,
                                               fontWeight: FontWeight.bold),
                                         ),
-                                        Text(
-                                          "Tanyakan masalah yang pada aplikasi ini",
-                                          style: TextStyle(fontSize: 12),
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                                SizedBox(height: 15),
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.info,
-                                      color: Colors.black,
-                                      size: 24.0,
-                                      semanticLabel:
-                                          'Text to announce in accessibility modes',
-                                    ),
-                                    Column(
-                                      children: [
-                                        Text(
-                                          "Tentang Aplikasi",
-                                          style: TextStyle(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        Text(
-                                          "Tentang aplikasi ini",
-                                          style: TextStyle(fontSize: 12),
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                                SizedBox(height: 15),
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.logout_rounded,
-                                      color: Colors.black,
-                                      size: 24.0,
-                                      semanticLabel:
-                                          'Text to announce in accessibility modes',
-                                    ),
-                                    Text(
-                                      "Log Out",
-                                      style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
-                                )
-                              ],
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
                             ),
                           ),
-                        ),
                       ],
                     )),
                     //         ),

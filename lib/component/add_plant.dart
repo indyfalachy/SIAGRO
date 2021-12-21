@@ -21,10 +21,11 @@ class _MyHomePageState extends State<AddPlant> {
 
   final databaseReference = FirebaseDatabase.instance.reference();
 
-  TextEditingController emailController = TextEditingController();
+  TextEditingController sensor1 = TextEditingController();
   TextEditingController nameController = TextEditingController();
-  TextEditingController usernamelController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  TextEditingController sensor2 = TextEditingController();
+  TextEditingController sensor3 = TextEditingController();
+  TextEditingController sensor4 = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -144,7 +145,7 @@ class _MyHomePageState extends State<AddPlant> {
                               style: TextStyle(color: Color(0xffffffff)),
                             ),
                             TextFormField(
-                              controller: emailController,
+                              controller: sensor1,
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   return 'Enter User Name';
@@ -200,7 +201,7 @@ class _MyHomePageState extends State<AddPlant> {
                               style: TextStyle(color: Color(0xffffffff)),
                             ),
                             TextFormField(
-                              controller: usernamelController,
+                              controller: sensor2,
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   return 'Enter an Email Address';
@@ -258,7 +259,7 @@ class _MyHomePageState extends State<AddPlant> {
                               style: TextStyle(color: Color(0xffffffff)),
                             ),
                             TextFormField(
-                              controller: usernamelController,
+                              controller: sensor3,
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   return 'Enter an Email Address';
@@ -316,7 +317,7 @@ class _MyHomePageState extends State<AddPlant> {
                               style: TextStyle(color: Color(0xffffffff)),
                             ),
                             TextFormField(
-                              controller: usernamelController,
+                              controller: sensor4,
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   return 'Enter an Email Address';
@@ -440,13 +441,13 @@ class _MyHomePageState extends State<AddPlant> {
     // log("x");
     print("asd");
     var random = new Random();
-    databaseReference.child(nameController.text).set({
+    databaseReference.child('plant').child(nameController.text).set({
       "id": nameController.text,
       "name": nameController.text,
-      "sensor1": random.nextInt(100),
-      "sensor2": random.nextInt(100),
-      "sensor3": random.nextInt(100),
-      "sensor4": random.nextInt(100),
+      "sensor1": sensor1.text,
+      "sensor2": sensor2.text,
+      "sensor3": sensor3.text,
+      "sensor4": sensor4.text,
     });
     Navigator.pushReplacement(
       context,
@@ -458,8 +459,9 @@ class _MyHomePageState extends State<AddPlant> {
   void dispose() {
     super.dispose();
     nameController.dispose();
-    emailController.dispose();
-    passwordController.dispose();
-    usernamelController.dispose();
+    sensor1.dispose();
+    sensor2.dispose();
+    sensor3.dispose();
+    sensor4.dispose();
   }
 }

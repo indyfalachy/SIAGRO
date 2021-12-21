@@ -89,7 +89,7 @@ class _MyHomePageState extends State<Login> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text(
-                                  'Username',
+                                  'Email',
                                   textAlign: TextAlign.left,
                                   style: TextStyle(color: Color(0xffffffff)),
                                 ),

@@ -25,7 +25,7 @@ class _Home extends State<home> {
   // log(nama);
   final databaseReference = FirebaseDatabase.instance.reference();
   void readData() {
-    databaseReference.once().then((DataSnapshot dataSnapshot) {
+    databaseReference.child('plant').once().then((DataSnapshot dataSnapshot) {
       this.nama = dataSnapshot.value.values;
       print(nama);
       setState(() {
@@ -83,7 +83,7 @@ class _Home extends State<home> {
                   child: Container(
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.pushReplacement(
+                        Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => AddPlant()));

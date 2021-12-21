@@ -3,6 +3,7 @@ import 'dart:async';
 import 'component/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'component/main_menu.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,10 +36,26 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    Timer(
-        Duration(seconds: 3),
-        () => Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => Login())));
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user == null) {
+        print('User is currently signed out!');
+        Timer(
+            Duration(seconds: 3),
+            () => Navigator.pushReplacement(
+                context, MaterialPageRoute(builder: (context) => Login())));
+      } else {
+        // !!!!! Here you know the user is signed-in !!!!!
+        print(user.email);
+        Timer(
+            Duration(seconds: 3),
+            () => Navigator.pushReplacement(
+                context, MaterialPageRoute(builder: (context) => MainMenu())));
+      }
+    });
+    //   Timer(
+    //       Duration(seconds: 3),
+    //       () => Navigator.pushReplacement(
+    //           context, MaterialPageRoute(builder: (context) => Login())));
   }
 
   @override

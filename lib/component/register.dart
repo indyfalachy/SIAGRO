@@ -3,6 +3,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'main_menu.dart';
+import 'package:slugify/slugify.dart';
 
 class Register extends StatefulWidget {
   Register({Key? key}) : super(key: key);
@@ -15,8 +16,9 @@ class _MyHomePageState extends State<Register> {
   bool isLoading = false;
   final _formKey = GlobalKey<FormState>();
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-  DatabaseReference dbRef =
-      FirebaseDatabase.instance.reference().child("Users");
+  final databaseReference = FirebaseDatabase.instance.reference();
+  // DatabaseReference dbRef =
+  //     FirebaseDatabase.instance.reference().child("Users");
   TextEditingController emailController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController usernamelController = TextEditingController();
@@ -175,7 +177,7 @@ class _MyHomePageState extends State<Register> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              'Username',
+                              'No Hp',
                               textAlign: TextAlign.left,
                               style: TextStyle(color: Color(0xffffffff)),
                             ),
@@ -397,6 +399,14 @@ class _MyHomePageState extends State<Register> {
   }
 
   void registerToFb() {
+    databaseReference.child('users').child(slugify(emailController.text)).set({
+      "email": emailController.text,
+      "name": nameController.text,
+      "username": usernamelController.text,
+      // "sensor2": sensor2.text,
+      // "sensor3": sensor3.text,
+      // "sensor4": sensor4.text,
+    });
     firebaseAuth
         .createUserWithEmailAndPassword(
             email: emailController.text, password: passwordController.text)
